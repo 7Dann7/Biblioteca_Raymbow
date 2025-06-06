@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro</title>
+  <link href="/src/output.css" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="https://img.freepik.com/vector-premium/logotipo-libro-o-biblioteca-librerias-empresas-editoriales-editores-enciclopedias-bibliotecas-educacion_661040-9761.jpg?w=360" />
+</head>
+<body class="flex items-center justify-center min-h-screen  bg-gradient-to-br from-gray-500 via-gray-8 00 to-gray-700">
+ 
+  <div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+    <form class="space-y-6" action="/auth/register" method="POST">
+        <h5 class="text-3xl font-extrabold text-yellow-500 text-center mb-4">Registrarse</h5>
+        <% if (message && message.length) { %>
+          <div class="mb-4 text-green-500 text-center font-semibold"><%= message %></div>
+        <% } %>
+        <div>
+          <label class="block mb-1 font-medium text-white">Usuario</label>
+          <input type="text" name="username" placeholder="Tu usuario" class="bg-white placeholder-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
+        </div>
+        <div>
+          <label class="block mb-1 font-medium text-white">Contraseña</label>
+          <input type="password" name="password" placeholder="••••••••" class="bg-white placeholder-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
+        </div>
+        <div>
+          <label class="block mb-1 font-medium text-white">Rol</label>
+          <div class="flex gap-4">
+            <label class="inline-flex items-center">
+              <input type="radio" name="role" value="Usuario" class="form-radio text-blue-600" checked>
+              <span class="ml-2 text-sm text-white">Usuario</span>
+            </label>
+            <label class="inline-flex items-center">
+              <input type="radio" name="role" value="Administrador" class="form-radio text-blue-600">
+              <span class="ml-2 text-sm text-white">Administrador</span>
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Registrarse</button>
+        <p class="mt-4 text-center text-sm">¿Ya tienes cuenta? <a href="/auth/login" class="text-blue-600 hover:underline">Inicia sesión</a></p>
+    </form>
+  </div>
+</body>
+</html>

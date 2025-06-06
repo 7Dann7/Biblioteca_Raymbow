@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edit Book</title>
+  <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+  <link href="/src/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 pt-24 px-4 min-h-screen">
+
+
+
+
+ <!-- Navbar -->
+ <nav class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <div class="flex items-center space-x-3 rtl:space-x-reverse">
+        <img src="https://img.freepik.com/vector-premium/logotipo-libro-o-biblioteca-librerias-empresas-editoriales-editores-enciclopedias-bibliotecas-educacion_661040-9761.jpg?w=360" class="h-8" alt="Logo" />
+        <span class="self-center text-2xl font-semibold whitespace-nowrap text-yellow-400 cursor-default select-none">RAYMBOW</span><span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white cursor-default select-none">LIBRARY</span>
+      </div>
+      <div class="flex md:order-2">
+        <button data-collapse-toggle="navbar-sticky" type="button" class="ml-2 inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700" aria-controls="navbar-sticky" aria-expanded="false">
+          <span class="sr-only">MENU</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+      <div class="hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+        <ul class="flex flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 text-sm font-medium">
+          <li><a href="/books" class="block py-2 px-3 text-blue-700">INICIO</a></li>
+         
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+
+
+  <div class="max-w-xl mx-auto">
+    
+    <% if (messages.error) { %>
+    <div class="mb-4">
+      <div class="bg-red-100 text-red-800 text-sm font-medium px-4 py-3 rounded-lg dark:bg-red-200 dark:text-red-900" role="alert">
+        <%- messages.error %>
+      </div>
+    </div>
+    <% } %>
+
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 text-lg font-semibold text-yellow-400">
+        EDITAR LIBRO
+      </div>
+      <div class="p-6">
+        <form action="/books/update/<%= id %>" method="post" class="space-y-5" enctype="multipart/form-data">
+          <div>
+            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Usuario:</label>
+            <input type="text" id="name" name="name" value="<%= name %>" autocomplete="off"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required>
+          </div>
+          <div>
+            <label for="autor_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Autor:</label>
+            <select id="autor_id" name="autor_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              <option value="">Selecciona un autor</option>
+              <% autores.forEach(function(autor) { %>
+                <option value="<%= autor.id %>" <%= autor_id == autor.id ? 'selected' : '' %>><%= autor.nombre %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div>
+            <label for="editorial_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Editorial:</label>
+            <select id="editorial_id" name="editorial_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              <option value="">Selecciona una editorial</option>
+              <% editoriales.forEach(function(editorial) { %>
+                <option value="<%= editorial.id %>" <%= editorial_id == editorial.id ? 'selected' : '' %>><%= editorial.nombre %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div>
+            <label for="categoria_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Categoría:</label>
+            <select id="categoria_id" name="categoria_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              <option value="">Selecciona una categoría</option>
+              <% categorias.forEach(function(categoria) { %>
+                <option value="<%= categoria.id %>" <%= categoria_id == categoria.id ? 'selected' : '' %>><%= categoria.nombre %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div>
+            <label for="isbn" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ISBN:</label>
+            <input type="text" id="isbn" name="isbn" value="<%= isbn || '' %>" autocomplete="off"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+          </div>
+          <div>
+            <label for="num_paginas" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Número de páginas:</label>
+            <input type="number" id="num_paginas" name="num_paginas" value="<%= num_paginas || '' %>" min="1"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+          </div>
+          <div>
+            <label for="anio_publicacion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Año de publicación:</label>
+            <input type="number" id="anio_publicacion" name="anio_publicacion" value="<%= anio_publicacion || '' %>" min="0" max="<%= new Date().getFullYear() %>"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+          </div>
+          <div>
+            <label for="num_ejemplares" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">N. de ejemplares:</label>
+            <input type="number" id="num_ejemplares" name="num_ejemplares" value="<%= num_ejemplares || '' %>" min="1"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+          </div>
+          <% if (typeof foto !== 'undefined' && foto) { %>
+          <div class="mb-4 flex flex-col items-center">
+            <img src="/images/<%= foto %>" alt="Portada actual" class="w-32 h-32 object-cover rounded mb-2" />
+            <span class="text-xs text-gray-500">Imagen actual</span>
+          </div>
+          <% } %>
+          <div>
+            <label for="imagen" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cambiar imagen:</label>
+            <input type="file" id="imagen" name="imagen" accept="image/*"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+          </div>
+          <div>
+              <input type="submit" value="Editar"
+                class="text-white bg-cyan-600 hover:bg-cyan-700 font-medium rounded-lg text-sm px-5 py-2.5 cursor-pointer dark:bg-cyan-500 dark:hover:bg-cyan-600">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+</body>
+</html>

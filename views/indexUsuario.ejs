@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Usuario</title>
+  <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+  <link href="/src/output.css" rel="stylesheet" />
+</head>
+<body class="min-h-screen flex flex-col bg-gradient-to-br from-gray-500 via-gray-8 00 to-gray-700">
+  <!-- Vista de usuario: cards de libros y botón de préstamo -->
+  <%- include('partials/header') %>
+  <nav class="bg-white dark:bg-gray-900 w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600 fixed">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <div class="flex items-center space-x-3 rtl:space-x-reverse">
+        <img src="https://img.freepik.com/vector-premium/logotipo-libro-o-biblioteca-librerias-empresas-editoriales-editores-enciclopedias-bibliotecas-educacion_661040-9761.jpg?w=360" class="h-10 w-10 rounded-full object-cover" alt="Logo" />
+        <span class="self-center text-2xl font-semibold whitespace-nowrap text-yellow-400 cursor-default select-none">RAYMBOW</span><span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white cursor-default select-none">LIBRARY</span>
+      </div>
+      <div class="flex md:order-2 gap-2 items-center">
+        <div class="relative">
+          <button id="dropdownAvatarNameButton" data-dropdown-toggle="dropdownAvatarName" class="flex items-center text-sm pe-1 font-medium text-white type="button">
+              <svg class="w-6 h-6 mr-2 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H3z" /></svg>
+                      <span class="md:inline-block"><%= user && user.username ? user.username : 'usuario' %></span>
+              <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                      </svg>
+                  </button>
+                  <!-- Dropdown menu fuera del navbar -->
+                  <div id="dropdownAvatarName" class="z-50 hidden absolute right-0 left-auto top-[110%] w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-700 dark:divide-gray-600 dark:border-gray-600">
+                      <div class="py-2">
+                          <a href="/auth/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
+                  </div>
+              </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar restaurado -->
+  <div class="flex">
+    
+    <div class="flex-1 md:ml-64">
+      <div class="h-24"></div>
+      <main>
+        <!-- Mostrar mensajes flash de éxito/error -->
+        <% if (typeof messages !== 'undefined' && (messages.success || messages.error)) { %>
+          <% if (messages.success) { %>
+            <div class="mb-4 mt-8 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative text-center">
+              <%= messages.success %>
+            </div>
+          <% } %>
+          <% if (messages.error) { %>
+            <div class="mb-4 mt-8 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-center">
+              <%= messages.error %>
+            </div>
+          <% } %>
+        <% } %>
+        <div class="flex flex-wrap justify-center gap-8 py-8">
+          <form method="GET" action="/usuario/buscar-google" class="w-full max-w-xl mx-auto mb-8 flex gap-2">
+            <input type="text" name="q" value="<%= q || '' %>" placeholder="Buscar en Google Books..." class="flex-1 rounded border-gray-300 text-sm px-3 py-2 text-black bg-white" />
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Buscar Google Books</button>
+          </form>
+          <% if (googleBooks && googleBooks.length) { %>
+            <div class="w-full mb-8">
+              <h3 class="text-lg font-bold text-blue-700 mb-4">Resultados de Google Books</h3>
+              <div class="flex flex-wrap gap-6 justify-center">
+                <% googleBooks.forEach(function(item) { %>
+                  <div class="max-w-xs w-full bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                    <div class="p-5 flex flex-col items-center">
+                      <% if(item.volumeInfo.imageLinks && item.volumeInfo.imageLinks.thumbnail) { %>
+                        <img src="<%= item.volumeInfo.imageLinks.thumbnail %>" alt="Portada" class="mb-2 w-28 h-40 object-cover rounded" />
+                      <% } %>
+                      <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-center"><%= item.volumeInfo.title %></h5>
+                      <p class="mb-1 text-sm text-gray-700 dark:text-gray-300 text-center">Autor: <span class="font-semibold"><%= (item.volumeInfo.authors && item.volumeInfo.authors.join(', ')) || '-' %></span></p>
+                      <p class="mb-1 text-sm text-gray-700 dark:text-gray-300 text-center">Editorial: <span class="font-semibold"><%= item.volumeInfo.publisher || '-' %></span></p>
+                      <p class="mb-1 text-sm text-gray-700 dark:text-gray-300 text-center">Año: <span class="font-semibold"><%= item.volumeInfo.publishedDate || '-' %></span></p>
+                      <a href="<%= item.volumeInfo.infoLink %>" target="_blank" class="mt-2 inline-block text-blue-600 hover:underline text-sm">Ver en Google Books</a>
+                      <form action="/usuario/agregar-google" method="POST" class="mt-2 w-full flex flex-col items-center gap-2">
+                        <input type="hidden" name="title" value="<%= item.volumeInfo.title %>">
+                        <input type="hidden" name="author" value="<%= (item.volumeInfo.authors && item.volumeInfo.authors.join(', ')) || '' %>">
+                        <input type="hidden" name="editorial" value="<%= item.volumeInfo.publisher || '' %>">
+                        <input type="hidden" name="categoria" value="<%= (item.volumeInfo.categories && item.volumeInfo.categories[0]) || '' %>">
+                        <input type="hidden" name="isbn" value="<%= (item.volumeInfo.industryIdentifiers && item.volumeInfo.industryIdentifiers[0] && item.volumeInfo.industryIdentifiers[0].identifier) || '' %>">
+                        <input type="hidden" name="anio" value="<%= item.volumeInfo.publishedDate || '' %>">
+                        <input type="hidden" name="num_paginas" value="<%= item.volumeInfo.pageCount || '' %>">
+                        <input type="hidden" name="num_ejemplares" value="1">
+                        <button type="submit" class="bg-blue-700 text-white px-3 py-1 rounded hover:bg-blue-800 text-sm w-full">Prestar</button>
+                      </form>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            </div>
+          <% } %>
+        </div>
+        <% if (data && data.length) { %>
+          <div class="flex flex-col items-center py-8 gap-8">
+            <% for (let i = 0; i < Math.min(data.length, 6); i += 3) { %>
+              <div class="flex flex-wrap justify-center gap-8 w-full">
+                <% for (let j = i; j < i + 3 && j < Math.min(data.length, 6); j++) { %>
+                  <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                    <div class="p-5">
+                      <img src="<%= data[j].foto ? ('/images/' + data[j].foto) : 'https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/270010783/original/e4f5789c63e0847bf7936a1dcbe952543fc24af5/make-an-attractive-book-cover.png' %>" alt="Portada" class="mb-2 w-48 h-48 object-cover rounded mx-auto" />
+                      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><%= data[j].name %></h5>
+                      <p class="mb-2 text-sm text-gray-700 dark:text-gray-300">
+                        Ejemplares disponibles: <span class="font-semibold"><%= data[j].num_ejemplares %></span>
+                      </p>
+                      <form action="/prestamos/solicitar" method="POST">
+                        <input type="hidden" name="id_libro" value="<%= data[j].id %>">
+                        <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Prestar</button>
+                      </form>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+            <% } %>
+          </div>
+        <% } else { %>
+          <p class="text-center text-gray-500 dark:text-gray-400 py-8">No hay libros disponibles.</p>
+        <% } %>
+      </main>
+      <%- include('partials/footer') %>
+    </div>
+  </div>
+  <footer class="w-full text-center py-4 text-gray-500 text-sm bg-black bg-opacity-60 rounded-t-2xl mt-0">
+    © 2025 Raymbow Library. Todos los derechos reservados.
+</footer>
+</body>
+</html>

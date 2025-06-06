@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Admin Préstamos</title>
+  <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+  <link href="/src/output.css" rel="stylesheet" />
+</head>
+<body class="min-h-screen flex flex-col bg-gradient-to-br from-gray-500 via-gray-800 to-gray-700">
+  <%- include('../../views/partials/header') %>
+  <!-- Navbar -->
+<nav class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <div class="flex items-center space-x-3 rtl:space-x-reverse">
+      <img src="https://img.freepik.com/vector-premium/logotipo-libro-o-biblioteca-librerias-empresas-editoriales-editores-enciclopedias-bibliotecas-educacion_661040-9761.jpg?w=360" class="h-10 w-10 rounded-full object-cover" alt="Logo" />
+      <span class="self-center text-2xl font-semibold whitespace-nowrap text-yellow-400 cursor-default select-none">RAYMBOW</span><span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white cursor-default select-none">LIBRARY</span>
+    </div>
+    <div class="flex md:order-2 gap-2">
+      <a href="/home" class="text-blue-700 font-medium rounded-lg text-sm px-4 py-2 bg-white border border-blue-700 hover:bg-blue-50 dark:bg-gray-900 dark:border-blue-400 dark:text-blue-300">Volver a Home</a>
+    </div>
+    <div class="hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+      <ul class="flex flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 text-sm font-medium">
+        <li><a href="/books" class="block py-2 px-3 text-blue-700">Libros</a></li>
+        <li><a href="/autores" class="block py-2 px-3 text-blue-700">Autores</a></li>
+        <li><a href="/editoriales" class="block py-2 px-3 text-blue-700">Editoriales</a></li>
+        <li><a href="/categorias" class="block py-2 px-3 text-blue-700">Categorías</a></li>
+        <li><a href="/prestamos/admin" class="block py-2 px-3 text-blue-700 font-bold underline">Préstamos</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="h-24"></div>
+<div class="container mx-auto px-4 py-8 flex-1">
+  <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+    <form method="GET" action="/prestamos/admin" class="flex gap-2 items-center">
+      <label for="estado" class="text-sm font-medium text-gray-700">Filtrar por estado:</label>
+      <select name="estado" id="estado" class="rounded border-gray-300 text-sm px-2 py-1">
+        <option value="">Todos</option>
+        <option value="activo" <%= (typeof estado !== 'undefined' && estado === 'activo') ? 'selected' : '' %>>Activo</option>
+        <option value="devuelto" <%= (typeof estado !== 'undefined' && estado === 'devuelto') ? 'selected' : '' %>>Devuelto</option>
+        <option value="vencido" <%= (typeof estado !== 'undefined' && estado === 'vencido') ? 'selected' : '' %>>Vencido</option>
+      </select>
+      <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">Filtrar</button>
+    </form>
+  </div>
+  <div class="overflow-x-auto rounded-lg shadow">
+    <table class="w-full min-w-[900px] text-sm text-left text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-yellow-400 uppercase bg-black dark:bg-gray-700">
+        <tr>
+          <th class="px-4 py-2">ID</th>
+          <th class="px-4 py-2">Usuario</th>
+          <th class="px-4 py-2">Libro</th>
+          <th class="px-4 py-2">Fecha Préstamo</th>
+          <th class="px-4 py-2">Fecha Devolución</th>
+          <th class="px-4 py-2">Estado</th>
+          <th class="px-4 py-2">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% 
+          const prestamosPendientes = prestamos.filter(p => p.estado !== 'devuelto');
+          if (prestamosPendientes.length === 0) { 
+        %>
+          <tr>
+            <td colspan="7" class="text-center py-4 text-gray-500 dark:text-gray-400">No hay préstamos pendientes de devolución.</td>
+          </tr>
+        <% } %>
+        <% prestamosPendientes.forEach(function(prestamo) { %>
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 text-white">
+            <td class="px-4 py-2 font-medium text-white dark:text-white"><%= prestamo.id %></td>
+            <td class="px-4 py-2 text-white dark:text-white"><%= prestamo.username %></td>
+            <td class="px-4 py-2 text-white dark:text-white"><%= prestamo.libro %></td>
+            <td class="px-4 py-2 text-white dark:text-white"><%= prestamo.fecha_prestamo ? prestamo.fecha_prestamo.toLocaleString() : '' %></td>
+            <td class="px-4 py-2 text-white dark:text-white"><%= prestamo.fecha_devolucion ? prestamo.fecha_devolucion.toLocaleString() : '-' %></td>
+            <td class="px-4 py-2 text-white dark:text-white">
+              <% if (prestamo.estado === 'devuelto') { %>
+                <span class="text-green-600 font-semibold">Devuelto</span>
+              <% } else { %>
+                <span class="text-yellow-600 font-semibold">Pendiente</span>
+              <% } %>
+            </td>
+            <td class="px-4 py-2 text-white dark:text-white">
+              <% if (prestamo.estado !== 'devuelto') { %>
+                <form action="/prestamos/devolver/<%= prestamo.id %>" method="POST" class="inline">
+                  <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded transition">Marcar como devuelto</button>
+                </form>
+              <% } else { %>
+                <span class="text-gray-400">Sin acciones</span>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+  <%- include('../../views/partials/footer') %>
+  <footer class="w-full text-center py-4 text-gray-500 text-sm bg-black bg-opacity-60 rounded-t-2xl mt-0">
+    © 2025 Raymbow Library. Todos los derechos reservados.
+  </footer>
+</body>
+</html>
